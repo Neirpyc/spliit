@@ -1,5 +1,5 @@
-import { S3Client } from '@aws-sdk/client-s3'
 import { env } from '@/lib/env'
+import { S3Client } from '@aws-sdk/client-s3'
 
 /**
  * Return an S3 client when expense documents are enabled and S3 settings are present.
@@ -7,7 +7,13 @@ import { env } from '@/lib/env'
  */
 export function getS3Client(): S3Client | null {
   if (!env.NEXT_PUBLIC_ENABLE_EXPENSE_DOCUMENTS) return null
-  if (!env.S3_UPLOAD_BUCKET || !env.S3_UPLOAD_KEY || !env.S3_UPLOAD_REGION || !env.S3_UPLOAD_SECRET) return null
+  if (
+    !env.S3_UPLOAD_BUCKET ||
+    !env.S3_UPLOAD_KEY ||
+    !env.S3_UPLOAD_REGION ||
+    !env.S3_UPLOAD_SECRET
+  )
+    return null
 
   return new S3Client({
     region: env.S3_UPLOAD_REGION,
@@ -62,4 +68,3 @@ export function parseObjectKeyFromUrl(url: string): string {
     return parts.join('/')
   }
 }
-

@@ -26,6 +26,7 @@ import {
 import { ToastAction } from '@/components/ui/toast'
 import { useToast } from '@/components/ui/use-toast'
 import { documentUrl, uploadDocument } from '@/lib/api/documents'
+import { MAX_FILE_SIZE, getImageData, useFileInput } from '@/lib/file-utils'
 import { useMediaQuery } from '@/lib/hooks'
 import {
   formatCurrency,
@@ -38,15 +39,8 @@ import { ChevronRight, FileQuestion, Loader2, Receipt } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import {
-  PropsWithChildren,
-  ReactNode,
-  useCallback,
-  useRef,
-  useState,
-} from 'react'
+import { PropsWithChildren, ReactNode, useState } from 'react'
 import { useCurrentGroup } from '../current-group-context'
-import { getImageData, useFileInput, MAX_FILE_SIZE } from '@/lib/file-utils'
 
 export function CreateFromReceiptButton() {
   const t = useTranslations('CreateFromReceipt')

@@ -17,14 +17,14 @@ import {
 } from '@/components/ui/dialog'
 import { ToastAction } from '@/components/ui/toast'
 import { useToast } from '@/components/ui/use-toast'
+import { documentUrl, uploadDocument } from '@/lib/api/documents'
+import { MAX_FILE_SIZE, getImageData, useFileInput } from '@/lib/file-utils'
 import { ExpenseFormValues } from '@/lib/schemas'
 import { formatFileSize } from '@/lib/utils'
 import { Loader2, Plus, Trash, X } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { documentUrl, uploadDocument } from '@/lib/api/documents'
-import { getImageData, useFileInput, MAX_FILE_SIZE } from '@/lib/file-utils'
 
 type Props = {
   documents: ExpenseFormValues['documents']
@@ -66,7 +66,15 @@ export function ExpenseDocumentsInput({ documents, updateDocuments }: Props) {
         // upload and get created record
         const created = await uploadDocument(file, { width, height })
 
-        updateDocuments([...documents, { id: created.id, url: created.url, width: created.width, height: created.height }])
+        updateDocuments([
+          ...documents,
+          {
+            id: created.id,
+            url: created.url,
+            width: created.width,
+            height: created.height,
+          },
+        ])
       } catch (err) {
         console.error(err)
         toast({
@@ -89,7 +97,10 @@ export function ExpenseDocumentsInput({ documents, updateDocuments }: Props) {
     upload()
   }
 
-  const { FileInput, openFileDialog } = useFileInput(handleFileChange, 'image/jpeg,image/png')
+  const { FileInput, openFileDialog } = useFileInput(
+    handleFileChange,
+    'image/jpeg,image/png',
+  )
 
   return (
     <div>

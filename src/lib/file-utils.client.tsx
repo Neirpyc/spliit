@@ -6,7 +6,9 @@ export const MAX_FILE_SIZE = Number(
 )
 
 // client-only: get image dimensions.
-export async function getImageData(file: File): Promise<{ width: number; height: number }> {
+export async function getImageData(
+  file: File,
+): Promise<{ width: number; height: number }> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file)
     const img = new window.Image()
@@ -31,7 +33,9 @@ export function useFileInput(onFile: (file: File) => void, accept?: string) {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const openFileDialog = useCallback(() => inputRef.current?.click(), [])
 
-  const FileInput: React.FC<{ className?: string; accept?: string }> = (props = {}) => (
+  const FileInput: React.FC<{ className?: string; accept?: string }> = (
+    props = {},
+  ) => (
     <input
       ref={inputRef}
       type="file"
@@ -48,4 +52,3 @@ export function useFileInput(onFile: (file: File) => void, accept?: string) {
 
   return { FileInput, openFileDialog }
 }
-

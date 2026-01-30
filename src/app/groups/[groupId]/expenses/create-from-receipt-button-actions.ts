@@ -1,13 +1,13 @@
 'use server'
 import { getCategories } from '@/lib/api'
 import { env } from '@/lib/env'
-import { formatCategoryForAIPrompt } from '@/lib/utils'
-import OpenAI from 'openai'
-import { ChatCompletionCreateParamsNonStreaming } from 'openai/resources/index.mjs'
 import { prisma } from '@/lib/prisma'
+import { getS3Client, parseObjectKeyFromUrl } from '@/lib/s3'
+import { formatCategoryForAIPrompt } from '@/lib/utils'
 import { GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { getS3Client, parseObjectKeyFromUrl } from '@/lib/s3'
+import OpenAI from 'openai'
+import { ChatCompletionCreateParamsNonStreaming } from 'openai/resources/index.mjs'
 
 const openai = new OpenAI({
   apiKey: env.OPENAI_API_KEY,
@@ -37,7 +37,8 @@ async function resolveDocumentToPresignedUrl(id: string): Promise<string> {
 
 export async function extractExpenseInformationFromImage(id: string) {
   'use server'
-  if (!env.NEXT_PUBLIC_ENABLE_RECEIPT_EXTRACT) throw new Error('Receipt extraction is not enabled')
+  if (!env.NEXT_PUBLIC_ENABLE_RECEIPT_EXTRACT)
+    throw new Error('Receipt extraction is not enabled')
 
   const categories = await getCategories()
 
@@ -62,7 +63,7 @@ export async function extractExpenseInformationFromImage(id: string) {
               Guess a title for the expense.
               Return the amount, the category, the date and the title with just a comma between them, without anything else.`,
           },
-          { type: 'image_url', image_url: { url: resolvedUrl } }
+          { type: 'image_url', image_url: { url: resolvedUrl } },
         ],
       },
     ],
@@ -79,7 +80,14 @@ export async function extractExpenseInformationFromImage(id: string) {
     parts.slice(3).join(',') || null,
   ]
 
-  return { amount: amountString ? Number(amountString) : NaN, categoryId, date, title }
+  return {
+    amount: amountString ? Number(amountString) : NaN,
+    categoryId,
+    date,
+    title,
+  }
 }
 
-export type ReceiptExtractedInfo = Awaited<ReturnType<typeof extractExpenseInformationFromImage>>
+export type ReceiptExtractedInfo = Awaited<
+  ReturnType<typeof extractExpenseInformationFromImage>
+>

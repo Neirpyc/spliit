@@ -1,10 +1,12 @@
-import { prisma } from '@/lib/prisma'
-import { PutObjectCommand } from '@aws-sdk/client-s3'
-import { getS3Client, buildObjectUrl } from '@/lib/s3'
 import { env } from '@/lib/env'
+import { prisma } from '@/lib/prisma'
+import { buildObjectUrl, getS3Client } from '@/lib/s3'
+import { PutObjectCommand } from '@aws-sdk/client-s3'
 
 const s3 = getS3Client()
-const SERVER_MAX_FILE_SIZE = Number(process.env.NEXT_PUBLIC_S3_MAX_FILE_SIZE ?? 5 * 1024 * 1024)
+const SERVER_MAX_FILE_SIZE = Number(
+  process.env.NEXT_PUBLIC_S3_MAX_FILE_SIZE ?? 5 * 1024 * 1024,
+)
 
 export async function POST(req: Request) {
   try {

@@ -58,4 +58,3 @@ export async function uploadDocument(
   const json = await res.json()
   return json as ExpenseDocumentRecord
 }
-
